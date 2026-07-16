@@ -263,3 +263,116 @@ if fichier_akhi is not None and fichier_alarmes is not None:
                 st.info(
                     "Aucun arrêt détecté pour cette turbine."
                 )
+                # ----------------------------------------------------
+    # ----------------------------------------------------
+    # ONGLET 4 : STATISTIQUES GÉNÉRALES
+    # ----------------------------------------------------
+    with onglet_statistiques:
+
+        st.subheader("📊 Statistiques Générales")
+
+        if not resultat.empty:
+
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric(
+                "Total arrêts détectés",
+                len(resultat)
+            )
+
+            col2.metric(
+                "Arrêts sans justification",
+                len(df_sans_just)
+            )
+
+            col3.metric(
+                "Turbines concernées",
+                resultat["Turbine"].nunique()
+            )
+
+            st.write("---")
+
+            st.markdown("### Répartition des diagnostics")
+
+            stats_diag = (
+                resultat["Diagnostic"]
+                .value_counts()
+                .reset_index()
+            )
+
+            stats_diag.columns = [
+                "Diagnostic",
+                "Nombre"
+            ]
+
+            fig_diag = px.pie(
+                stats_diag,
+                names="Diagnostic",
+                values="Nombre",
+                title="Répartition des arrêts"
+            )
+
+            st.plotly_chart(
+                fig_diag,
+                use_container_width=True
+            )
+
+            st.markdown(
+                "### Classement des turbines les plus touchées"
+            )
+
+            stats_turbines = (
+                resultat["Turbine"]
+                .value_counts()
+                .reset_index()
+            )
+
+            stats_turbines.columns = [
+                "Turbine",
+                "Nombre d'arrêts"
+            ]
+
+            st.dataframe(
+                stats_turbines,
+                use_container_width=True
+            )
+
+            fig_turbines = px.bar(
+                stats_turbines,
+                x="Turbine",
+                y="Nombre d'arrêts",
+                title="Nombre d'arrêts par turbine"
+            )
+
+            st.plotly_chart(
+                fig_turbines,
+                use_container_width=True
+            )
+
+            st.markdown(
+                "### Durée cumulée des arrêts par turbine"
+            )
+
+            durees = (
+                resultat.groupby("Turbine")["Durée (min)"]
+                .sum()
+                .reset_index()
+            )
+
+            fig_duree = px.bar(
+                durees,
+                x="Turbine",
+                y="Durée (min)",
+                title="Durée totale des arrêts"
+            )
+
+            st.plotly_chart(
+                fig_duree,
+                use_container_width=True
+            )
+
+        else:
+
+            st.info(
+                "Aucune donnée disponible."
+            )
