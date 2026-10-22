@@ -3,11 +3,11 @@ import pandas as pd
 import plotly.express as px
 
 st.set_page_config(
-    page_title="FATIMA WindGuard V3",
+    page_title="AKHFENNIR WindGuard",
     layout="wide"
 )
 
-st.title("🌬️ FATIMA WindGuard V3")
+st.title("AKHFENNIR WindGuard")
 st.subheader("Détection des arrêts sans justification")
 
 # ==========================
